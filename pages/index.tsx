@@ -1,14 +1,5 @@
-import Layout from "../components/Layout";
-import Button from "@mui/material/Button";
+import React from "react";
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
-    <h1>Hello Next.js 👋</h1>
-    <h1 color="text.primary">Hello, this is the homepage!</h1>
-    <Button variant="contained" color="primary">
-      Click Me
-    </Button>
-  </Layout>
-);
+const IndexPage: React.FC = () => <h1>Hello</h1>;
 
 export default IndexPage;
