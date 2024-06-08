@@ -24,12 +24,13 @@ const IndexPage: React.FC = () => {
   const [selectedReplica, setSelectedReplica] = useState<any>(null);
   const [open, setOpen] = useState<boolean>(false);
   const [script, setScript] = useState<string>("");
+  const [title, setTitle] = useState<string>("");
   const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
   const [snackbarMessage, setSnackbarMessage] = useState<string>("");
   const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">(
     "success"
   );
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const videoRefs = useRef<any[]>([]);
 
   useEffect(() => {
@@ -41,7 +42,8 @@ const IndexPage: React.FC = () => {
       .catch((err) => {
         console.error(err);
         handleSnackbarOpen("Failed to fetch replicas", "error");
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const loadMore = () => {
@@ -64,6 +66,7 @@ const IndexPage: React.FC = () => {
   const handleClose = () => {
     setOpen(false);
     setScript("");
+    setTitle("");
   };
 
   const handleGenerateVideo = () => {
@@ -73,7 +76,7 @@ const IndexPage: React.FC = () => {
     const requestBody = {
       id: selectedReplica.replica_id,
       script: script,
-      name: selectedReplica.replica_name,
+      name: title,
     };
 
     setLoading(true);
@@ -185,13 +188,21 @@ const IndexPage: React.FC = () => {
       )}
 
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Enter Script for Video</DialogTitle>
+        <DialogTitle>Enter Details for Video</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please enter the script for the video below:
+          <DialogContentText sx={{ marginBottom: "10px" }}>
+            Please enter the script and title for the video below:
           </DialogContentText>
           <TextField
             autoFocus
+            margin="dense"
+            label="Video Title"
+            type="text"
+            fullWidth
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+          <TextField
             margin="dense"
             label="Video Script"
             type="text"
@@ -206,7 +217,11 @@ const IndexPage: React.FC = () => {
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleGenerateVideo} color="primary">
+          <Button
+            onClick={handleGenerateVideo}
+            color="primary"
+            disabled={!script || !title}
+          >
             Generate Video
           </Button>
         </DialogActions>
