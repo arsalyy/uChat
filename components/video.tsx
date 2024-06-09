@@ -12,21 +12,25 @@ const Video: React.FC<{ id: string }> = ({ id }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const fetchInitiated = useRef(false);
 
   const { showNotification } = useNotification();
 
   useEffect(() => {
-    fetch(`/api/video?video_id=${id}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((data) => setVideoData(data))
-      .catch((err) => {
-        console.error(err);
-        setError(err);
-        showNotification("Failed to fetch the video", "error");
+    if (!fetchInitiated.current) {
+      fetchInitiated.current = true;
+      fetch(`/api/video?video_id=${id}`, {
+        method: "GET",
       })
-      .finally(() => setLoading(false));
+        .then((response) => response.json())
+        .then((data) => setVideoData(data))
+        .catch((err) => {
+          console.error(err);
+          setError(err);
+          showNotification("Failed to fetch the video", "error");
+        })
+        .finally(() => setLoading(false));
+    }
   }, [id, showNotification]);
 
   useEffect(() => {
