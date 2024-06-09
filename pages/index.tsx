@@ -11,6 +11,8 @@ import {
 import { Loader } from "@/components/loader";
 import { VideoDetailsModal } from "@/components/videoDetailsModal";
 import { useNotification } from "@/hooks/notification";
+import { IGeneratedVideo } from "@/interfaces";
+import { Video } from "@/components/video";
 
 const Page: React.FC = () => {
   const [replicas, setReplicas] = useState<any[]>([]);
@@ -19,6 +21,7 @@ const Page: React.FC = () => {
   const [videoModalOpen, setVideoModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const videoRefs = useRef<any[]>([]);
+  const [generatedVideo, setGeneratedVideo] = useState<IGeneratedVideo>();
 
   const { showNotification } = useNotification();
 
@@ -33,6 +36,29 @@ const Page: React.FC = () => {
         showNotification("Failed to fetch replicas", "error");
       })
       .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    const storedGeneratedVideo = localStorage.getItem("generatedVideo");
+
+    if (storedGeneratedVideo) {
+      try {
+        const parsedVideo = JSON.parse(storedGeneratedVideo);
+        if (
+          parsedVideo &&
+          typeof parsedVideo === "object" &&
+          "video_id" in parsedVideo &&
+          "video_name" in parsedVideo &&
+          "status" in parsedVideo &&
+          "hosted_url" in parsedVideo &&
+          "created_at" in parsedVideo
+        ) {
+          setGeneratedVideo(parsedVideo);
+        }
+      } catch (error) {
+        console.error("Error parsing stored generated video:", error);
+      }
+    }
   }, []);
 
   const loadMore = () => {
@@ -81,6 +107,15 @@ const Page: React.FC = () => {
       })
       .then((response) => {
         showNotification("Video generated successfully", "success");
+        setGeneratedVideo(response);
+        try {
+          localStorage.setItem("generatedVideo", JSON.stringify(response));
+        } catch (error) {
+          console.error(
+            "Error storing generated video in localStorage:",
+            error
+          );
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -93,6 +128,7 @@ const Page: React.FC = () => {
   };
 
   if (loading) return <Loader />;
+  if (generatedVideo) return <Video id={generatedVideo.video_id} />;
   return (
     <>
       <VideoDetailsModal

@@ -22,6 +22,7 @@
     "eslint": "8.46.0",
     "eslint-config-next": "13.4.12",
     "express-jwt": "^8.4.1",
+    "hls.js": "^1.5.11",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.4.1",
     "next": "13.4.12",

@@ -16,3 +16,26 @@ export interface INotificationContextType {
 export interface INotificationProviderProps {
   children: React.ReactNode;
 }
+
+export interface IGeneratedVideo {
+  video_id: string;
+  video_name: string;
+  status: string;
+  hosted_url: string;
+  created_at: string;
+}
+
+export interface IVideo {
+  video_id: string;
+  video_name: string;
+  status: string;
+  data: {
+    script: string;
+  };
+  download_url: string;
+  stream_url: string;
+  hosted_url: string;
+  status_details: string;
+  created_at: string;
+  updated_at: string;
+}
