@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import { IGeneratedVideo } from "@/interfaces";
 import { Video } from "@/components/video";
 import { Replicas } from "@/components/replicas";
+import { useRouter } from "next/router";
 
 const Page: React.FC = () => {
+  const router = useRouter();
+  const { user_id } = router.query;
+
   const [generatedVideo, setGeneratedVideo] = useState<IGeneratedVideo>();
 
   useEffect(() => {
+    window.alert(`Id: ${user_id}`);
+
     const storedGeneratedVideo = localStorage.getItem("generatedVideo");
 
     if (storedGeneratedVideo) {
@@ -27,10 +33,9 @@ const Page: React.FC = () => {
         console.error("Error parsing stored generated video:", error);
       }
     }
-  }, []);
+  }, [user_id]);
 
-  if (generatedVideo) return <Video id={generatedVideo.video_id} />;
-  else return <Replicas setGeneratedVideo={setGeneratedVideo} />;
+  return <h1>{user_id}</h1>;
 };
 
 export default Page;
