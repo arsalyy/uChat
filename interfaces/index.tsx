@@ -39,3 +39,10 @@ export interface IVideo {
   created_at: string;
   updated_at: string;
 }
+
+export interface IUser {
+  id: string;
+  name: string;
+  email: string;
+  uchatId: string;
+}
