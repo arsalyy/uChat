@@ -1,4 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
+import prisma from "@/prisma/client";
+import { v4 as uuidv4 } from "uuid";
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,7 +12,7 @@ export default async function handler(
       .json({ error: "Method not allowed. Use POST instead." });
   }
 
-  const { id, script, name } = req.body;
+  const { id, script, name, userId } = req.body;
 
   if (!id || typeof id !== "string") {
     return res.status(400).json({ error: "Invalid or missing 'id' field." });
@@ -47,7 +49,37 @@ export default async function handler(
 
     try {
       const data = JSON.parse(text);
-      res.status(200).json(data);
+
+      try {
+        const video = await prisma.video.create({
+          data: {
+            id: uuidv4(),
+            status: data.status,
+            name: data.video_name,
+            hostedUrl: data.hosted_url,
+            videoId: data.video_id,
+            downloadUrl: "",
+            script: "",
+            statusDetails: "",
+            streamUrl: "",
+            replicaId: "",
+          },
+        });
+
+        await prisma.userVideo.create({
+          data: {
+            userId: userId,
+            videoId: video.id,
+          },
+        });
+
+        res.status(200).json(data);
+      } catch (e) {
+        console.error("Write error:", e);
+        res
+          .status(500)
+          .json({ error: "Failed to insert the record in the db." });
+      }
     } catch (err) {
       console.error("Error parsing JSON:", err);
       res.status(500).json({ error: "Failed to parse response from API" });

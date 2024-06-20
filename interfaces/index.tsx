@@ -13,6 +13,13 @@ export interface INotificationContextType {
   handleClose: () => void;
 }
 
+export interface IUserContextProps {
+  user: IUser | null;
+  setUser: React.Dispatch<React.SetStateAction<IUser | null>>;
+  refetch: () => void;
+  loading: boolean;
+}
+
 export interface INotificationProviderProps {
   children: React.ReactNode;
 }
@@ -45,4 +52,19 @@ export interface IUser {
   name: string;
   email: string;
   uchatId: string;
+  videos: Array<{
+    userId: string;
+    videoId: string;
+    video: {
+      id: string;
+      downloadUrl: string;
+      hostedUrl: string;
+      name: string;
+      script: string;
+      status: string;
+      statusDetails: string;
+      streamUrl: string;
+      videoId: string;
+    };
+  }>;
 }

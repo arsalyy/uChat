@@ -23,6 +23,13 @@ export default async function handler(
   try {
     let user = await prisma.user.findUnique({
       where: { uchatId },
+      include: {
+        videos: {
+          include: {
+            video: true,
+          },
+        },
+      },
     });
 
     if (!user) {
@@ -34,6 +41,13 @@ export default async function handler(
 
       user = await prisma.user.create({
         data: { id: uuidv4(), email, name, uchatId },
+        include: {
+          videos: {
+            include: {
+              video: true,
+            },
+          },
+        },
       });
     }
 

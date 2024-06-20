@@ -6,7 +6,8 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["postgresqlExtensions"]
+  previewFeatures = ["postgresqlExtensions", "fullTextSearch"]
+  binaryTargets   = env("PRISMA_BINARY_TARGET")
 }
 
 datasource db {
@@ -25,8 +26,47 @@ model User {
   updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
   deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
 
+  videos UserVideo[]
+
   @@index([email])
   @@index([name])
   @@index([uchatId])
   @@map("users")
+}
+
+model Video {
+  id            String @id @db.Uuid
+  name          String
+  status        String
+  script        String
+  downloadUrl   String @map("download_url")
+  streamUrl     String @map("stream_url")
+  hostedUrl     String @map("hosted_url")
+  statusDetails String @map("status_details")
+  videoId       String @unique @map("video_id")
+  replicaId     String @map("replica_id")
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  users UserVideo[]
+
+  @@index([videoId])
+  @@map("videos")
+}
+
+model UserVideo {
+  userId  String @map("user_id") @db.Uuid
+  videoId String @map("video_id") @db.Uuid
+
+  user  User  @relation(fields: [userId], references: [id])
+  video Video @relation(fields: [videoId], references: [id])
+
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime  @default(now()) @updatedAt @map("updated_at") @db.Timestamptz(3)
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz(3)
+
+  @@id([userId, videoId])
+  @@map("users_to_videos")
 }

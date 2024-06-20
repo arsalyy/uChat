@@ -11,11 +11,9 @@ import {
 import { Loader } from "@/components/loader";
 import { VideoDetailsModal } from "@/components/videoDetailsModal";
 import { useNotification } from "@/hooks/notification";
-import { IGeneratedVideo } from "@/interfaces";
+import { useUser } from "@/hooks/user";
 
-const Replicas: React.FC<{
-  setGeneratedVideo: (generatedVideo: IGeneratedVideo) => void;
-}> = ({ setGeneratedVideo }) => {
+const Replicas: React.FC = () => {
   const [replicas, setReplicas] = useState<any[]>([]);
   const [visibleReplicas, setVisibleReplicas] = useState<number>(3);
   const [selectedReplica, setSelectedReplica] = useState<any>(null);
@@ -25,6 +23,7 @@ const Replicas: React.FC<{
   const fetchInitiated = useRef(false);
 
   const { showNotification } = useNotification();
+  const { user, refetch } = useUser();
 
   useEffect(() => {
     if (!fetchInitiated.current) {
@@ -69,6 +68,7 @@ const Replicas: React.FC<{
       id: selectedReplica.replica_id,
       script: script,
       name: title,
+      userId: user?.id,
     };
 
     setLoading(true);
@@ -86,17 +86,9 @@ const Replicas: React.FC<{
         }
         return response.json();
       })
-      .then((response) => {
+      .then(() => {
         showNotification("Video generated successfully", "success");
-        setGeneratedVideo(response);
-        try {
-          localStorage.setItem("generatedVideo", JSON.stringify(response));
-        } catch (error) {
-          console.error(
-            "Error storing generated video in localStorage:",
-            error
-          );
-        }
+        refetch();
       })
       .catch((err) => {
         console.error(err);
