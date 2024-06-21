@@ -12,8 +12,10 @@ import { Loader } from "@/components/loader";
 import { VideoDetailsModal } from "@/components/videoDetailsModal";
 import { useNotification } from "@/hooks/notification";
 import { useUser } from "@/hooks/user";
+import { useRouter } from "next/router";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-const Replicas: React.FC = () => {
+const Page: React.FC = () => {
   const [replicas, setReplicas] = useState<any[]>([]);
   const [visibleReplicas, setVisibleReplicas] = useState<number>(3);
   const [selectedReplica, setSelectedReplica] = useState<any>(null);
@@ -24,6 +26,8 @@ const Replicas: React.FC = () => {
 
   const { showNotification } = useNotification();
   const { user, refetch } = useUser();
+  const router = useRouter();
+  const { query } = router;
 
   useEffect(() => {
     if (!fetchInitiated.current) {
@@ -108,7 +112,16 @@ const Replicas: React.FC = () => {
         handleClose={handleVideoModalClose}
         handleGenerateVideo={handleGenerateVideo}
       />
-      <Grid container spacing={2} padding={2}>
+      <Button
+        variant="outlined"
+        color="primary"
+        style={{ position: "absolute", top: 10, left: 20 }}
+        startIcon={<ArrowBackIcon />}
+        onClick={() => router.push({ pathname: "/", query: { ...query } })}
+      >
+        Back to Home
+      </Button>
+      <Grid style={{ marginTop: "30px" }} container spacing={2} padding={2}>
         {replicas?.slice(0, visibleReplicas).map((replica, index) => (
           <Grid item key={replica.replica_id} xs={12} sm={6} md={4}>
             <Card>
@@ -154,4 +167,4 @@ const Replicas: React.FC = () => {
   );
 };
 
-export { Replicas };
+export default Page;
