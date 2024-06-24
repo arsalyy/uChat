@@ -1,16 +1,18 @@
 import { AlertColor } from "@mui/material";
-export interface IVideoDetailsModal {
+
+export interface IModal {
   open: boolean;
   handleClose: () => void;
+}
+
+export interface IVideoDetailsModal extends IModal {
   handleGenerateVideo: (title: string, script: string) => void;
 }
 
-export interface INotificationContextType {
-  open: boolean;
+export interface INotificationContextType extends IModal {
   message: string;
   severity: AlertColor;
   showNotification: (message: string, severity: AlertColor) => void;
-  handleClose: () => void;
 }
 
 export interface IUserContextProps {
