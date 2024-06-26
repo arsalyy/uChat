@@ -122,8 +122,8 @@ const UploadModal: React.FC<IModal> = ({ open, handleClose }) => {
           >
             Replica training will fail without the following consent statement
             being present at the beginning of the video: <br />
-            I, [FULL NAME], am currently speaking and consent Tavus to create an
-            AI clone of me by using the audio and video samples I provide. I
+            I, [FULL NAME], am currently speaking and consent to create an AI
+            clone of me by using the audio and video samples I provide. I
             understand that this AI clone can be used to create videos that look
             and sound like me.
           </Typography>
